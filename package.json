@@ -1,0 +1,44 @@
+{
+  "name": "serverless-deployment-manager",
+  "version": "0.1.0",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "jest",
+    "compile": "babel src --out-dir lib",
+    "pre-commit": "npm run compile && npm run lint && npm run prettify",
+    "prepublishOnly": "npm run pre-commit && npm test",
+    "lint": "eslint . --fix --cache",
+    "prettify": "prettier --write --ignore-path .gitignore '**/*.{css,html,js,json,md,yaml,yml}'"
+  },
+  "author": "",
+  "jest": {
+    "coverageDirectory": "./coverage/",
+    "collectCoverage": true,
+    "testEnvironment": "node"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.484.0",
+    "ramda": "^0.26.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.5",
+    "@babel/node": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "babel-jest": "^24.8.0",
+    "eslint": "^6.0.1",
+    "eslint-config-maasglobal": "^2.1.0",
+    "eslint-plugin-import": "^2.18.0",
+    "husky": "^2.7.0",
+    "jest": "^24.8.0",
+    "prettier": "^1.18.2",
+    "regenerator-runtime": "^0.13.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run pre-commit"
+    }
+  }
+}

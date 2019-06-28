@@ -1,0 +1,18 @@
+# package directories
+node_modules
+jspm_packages
+
+.tmp
+.eslintcache
+coverage
+.DS_Store
+babel.config.js
+.editorconfig
+.eslintignore
+.eslintrc.js
+.prettierignore
+.prettierrc.js
+
+test
+
+src
