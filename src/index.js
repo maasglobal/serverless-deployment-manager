@@ -2,6 +2,18 @@
 
 const AWS = require('aws-sdk');
 
+function testStage(stage, deploymentDefinitionStage) {
+  let regexp;
+  if (/^\/.*\/(i|g|m|s|u|y)*$/.test(deploymentDefinitionStage)) {
+    const pattern = deploymentDefinitionStage.substr(1, deploymentDefinitionStage.lastIndexOf('/') - 1);
+    const flag = deploymentDefinitionStage.substr(deploymentDefinitionStage.lastIndexOf('/') + 1);
+    regexp = new RegExp(pattern, flag);
+  } else {
+    regexp = new RegExp(`^${deploymentDefinitionStage}$`);
+  }
+  return regexp.test(stage);
+}
+
 class DeploymentManagerPlugin {
   constructor(serverless, options) {
     this.serverless = serverless;
@@ -32,21 +44,31 @@ class DeploymentManagerPlugin {
       throw new Error('[serverless-deployment-guard] service.custom.deployment definition is missing');
     }
 
-    if (!service.custom.deployment.map(({ stage }) => stage).includes(processedInput.options.stage)) {
+    const deploymentDefinitions = service.custom.deployment.filter(({ stage }) =>
+      testStage(processedInput.options.stage, stage)
+    );
+
+    if (deploymentDefinitions.length === 0) {
       throw new Error(`[serverless-deployment-guard] stage '${processedInput.options.stage}' cannot be deployed`);
     }
 
-    const sts = new AWS.STS({ region: processedInput.options.region });
-    const { Account } = await sts.getCallerIdentity().promise();
+    if (deploymentDefinitions.every(item => !!item.accountId)) {
+      const sts = new AWS.STS({ region: processedInput.options.region });
+      const { Account } = await sts.getCallerIdentity().promise();
 
-    const exists = !!service.custom.deployment.find(item => {
-      return item.stage && item.accountId && item.stage === processedInput.options.stage && item.accountId === Account;
-    });
-
-    if (!exists) {
-      throw new Error(
-        `[serverless-deployment-guard] stage '${processedInput.options.stage}' cannot be deployed to account '${Account}'`
-      );
+      const exists = !!service.custom.deployment.find(item => {
+        return (
+          item.stage &&
+          item.accountId &&
+          testStage(processedInput.options.stage, item.stage) &&
+          item.accountId.toString() === Account
+        );
+      });
+      if (!exists) {
+        throw new Error(
+          `[serverless-deployment-guard] stage '${processedInput.options.stage}' cannot be deployed to account '${Account}'`
+        );
+      }
     }
   }
 }

@@ -47,6 +47,58 @@ describe('#authorizer handler', () => {
     await expect(deploymentManager.validateStageAndAccount()).resolves.toBeUndefined();
   });
 
+  it('should pass if regexp stage and account is correct', async () => {
+    const deploymentManager = new DeploymentGuardPlugin({
+      processedInput: { options: { stage: 'sandbox' } },
+      service: {
+        custom: {
+          deployment: [{ stage: '/box$/', accountId: '0123456789' }],
+        },
+      },
+    });
+
+    await expect(deploymentManager.validateStageAndAccount()).resolves.toBeUndefined();
+  });
+
+  it('should pass if regexp stage with flags and account is correct', async () => {
+    const deploymentManager = new DeploymentGuardPlugin({
+      processedInput: { options: { stage: 'SANDBOX' } },
+      service: {
+        custom: {
+          deployment: [{ stage: '/box$/i', accountId: '0123456789' }],
+        },
+      },
+    });
+
+    await expect(deploymentManager.validateStageAndAccount()).resolves.toBeUndefined();
+  });
+
+  it('should pass if stage and account is correct in one of the definitions', async () => {
+    const deploymentManager = new DeploymentGuardPlugin({
+      processedInput: { options: { stage: 'dev' } },
+      service: {
+        custom: {
+          deployment: [{ stage: 'dev', accountId: '1234567890' }, { stage: 'dev', accountId: '0123456789' }],
+        },
+      },
+    });
+
+    await expect(deploymentManager.validateStageAndAccount()).resolves.toBeUndefined();
+  });
+
+  it('should pass if stage is correct and no account id is defined', async () => {
+    const deploymentManager = new DeploymentGuardPlugin({
+      processedInput: { options: { stage: 'dev' } },
+      service: {
+        custom: {
+          deployment: [{ stage: 'dev' }, { stage: 'prod' }],
+        },
+      },
+    });
+
+    await expect(deploymentManager.validateStageAndAccount()).resolves.toBeUndefined();
+  });
+
   it('should throw error if trying to deploy to incorrect account', async () => {
     const deploymentManager = new DeploymentGuardPlugin({
       processedInput: { options: { stage: 'dev' } },
