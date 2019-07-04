@@ -1,6 +1,8 @@
 # Serverless Deployment Manager Plugin
 
-This plugin will prevent you from deploying stack into incorrect AWS account.
+[![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
+
+This [Serverless Framework](https://serverless.com) plugin will prevent you from deploying stack into incorrect AWS account.
 
 ## Install
 

@@ -1,7 +1,7 @@
 {
   "name": "serverless-deployment-manager",
-  "version": "0.1.2",
-  "description": "",
+  "version": "0.1.3",
+  "description": "Serverless Framework Plugin for managing deployment to predefined AWS accounts",
   "main": "lib/index.js",
   "scripts": {
     "test": "jest",
@@ -11,13 +11,16 @@
     "lint": "eslint . --fix --cache",
     "prettify": "prettier --write --ignore-path .gitignore '**/*.{css,html,js,json,md,yaml,yml}'"
   },
-  "author": "",
+  "author": "laardee",
   "jest": {
     "coverageDirectory": "./coverage/",
     "collectCoverage": true,
     "testEnvironment": "node"
   },
-  "license": "ISC",
+  "keywords": [
+    "serverless"
+  ],
+  "license": "MIT",
   "dependencies": {
     "aws-sdk": "^2.484.0",
     "ramda": "^0.26.1"
