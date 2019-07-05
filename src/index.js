@@ -1,10 +1,23 @@
 'use strict';
 
 const AWS = require('aws-sdk');
+const { filter, isNil, pipe, head, sortBy } = require('ramda');
+
+function stageType(stage) {
+  if (/^\/.*\/(i|g|m|s|u|y)*$/.test(stage)) {
+    return 1;
+  } else if (isNil(stage)) {
+    return 2;
+  }
+  return 0;
+}
 
 function testStage(stage, deploymentDefinitionStage) {
+  if (isNil(deploymentDefinitionStage)) {
+    return true;
+  }
   let regexp;
-  if (/^\/.*\/(i|g|m|s|u|y)*$/.test(deploymentDefinitionStage)) {
+  if (stageType(deploymentDefinitionStage) === 1) {
     const pattern = deploymentDefinitionStage.substr(1, deploymentDefinitionStage.lastIndexOf('/') - 1);
     const flag = deploymentDefinitionStage.substr(deploymentDefinitionStage.lastIndexOf('/') + 1);
     regexp = new RegExp(pattern, flag);
@@ -44,27 +57,20 @@ class DeploymentManagerPlugin {
       throw new Error('[serverless-deployment-guard] service.custom.deployment definition is missing');
     }
 
-    const deploymentDefinitions = service.custom.deployment.filter(({ stage }) =>
-      testStage(processedInput.options.stage, stage)
-    );
+    const deploymentDefinition = pipe(
+      filter(({ stage }) => testStage(processedInput.options.stage, stage)),
+      sortBy(({ stage }) => stageType(stage)),
+      head
+    )(service.custom.deployment);
 
-    if (deploymentDefinitions.length === 0) {
+    if (isNil(deploymentDefinition)) {
       throw new Error(`[serverless-deployment-guard] stage '${processedInput.options.stage}' cannot be deployed`);
     }
 
-    if (deploymentDefinitions.every(item => !!item.accountId)) {
+    if (!isNil(deploymentDefinition.accountId)) {
       const sts = new AWS.STS({ region: processedInput.options.region });
       const { Account } = await sts.getCallerIdentity().promise();
-
-      const exists = !!service.custom.deployment.find(item => {
-        return (
-          item.stage &&
-          item.accountId &&
-          testStage(processedInput.options.stage, item.stage) &&
-          item.accountId.toString() === Account
-        );
-      });
-      if (!exists) {
+      if (deploymentDefinition.accountId !== Account) {
         throw new Error(
           `[serverless-deployment-guard] stage '${processedInput.options.stage}' cannot be deployed to account '${Account}'`
         );
