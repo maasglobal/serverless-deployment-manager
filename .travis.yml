@@ -1,0 +1,32 @@
+language: node_js
+node_js: 'node' # Latest stable Node.js release
+cache:
+  directories:
+    - node_modules # Our node modules
+    - $HOME/.npm # Globally installed packages, e.g. NPM
+
+branches: # Skip tag builds
+  except:
+    - /^\d+.\d+.\d+$/
+
+install:
+  - npm install
+  - npm update # Ensure to use latest versions of dependencies
+
+stages:
+  - name: test
+    if: type = pull_request AND branch != master
+  - name: deploy
+    if: branch = master AND type != pull_request
+
+jobs:
+  include:
+    - stage: test
+      script: npm run lint && npm run prettier && npm test
+    - stage: deploy
+      script: skip
+      deploy:
+        provider: npm
+        email: tech@maas.global
+        api_key: $NPM_TOKEN
+      after_deploy: ./scripts/tag.sh
