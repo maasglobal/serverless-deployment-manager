@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "jest",
-    "compile": "npx babel src --out-dir lib",
+    "compile": "./node_modules/.bin/babel src --out-dir lib",
     "pre-commit": "npm run compile && npm run lint && npm run prettify",
     "prepublishOnly": "npm run pre-commit && npm test",
     "lint": "eslint . --fix --cache",
@@ -26,7 +26,8 @@
     "ramda": "^0.26.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.5.0 ",
+    "@babel/cli": "^7.5.0",
+    "@babel/core": "^7.5.0",
     "@babel/preset-env": "^7.5.0 ",
     "babel-jest": "^24.8.0",
     "eslint": "^6.0.1",
