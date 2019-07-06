@@ -1,17 +1,17 @@
 language: node_js
-node_js: 'node' # Latest stable Node.js release
+node_js: 'node'
 cache:
   directories:
-    - node_modules # Our node modules
-    - $HOME/.npm # Globally installed packages, e.g. NPM
+    - node_modules
+    - $HOME/.npm
 
-branches: # Skip tag builds
+branches:
   except:
     - /^\d+.\d+.\d+$/
 
 install:
   - npm install
-  - npm update # Ensure to use latest versions of dependencies
+  - npm update
 
 stages:
   - name: test
@@ -22,7 +22,7 @@ stages:
 jobs:
   include:
     - stage: test
-      script: npm run lint && npm run prettier && npm test
+      script: npm run lint && npm test && npm run compile
     - stage: deploy
       script: skip
       deploy:
