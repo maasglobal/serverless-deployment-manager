@@ -1,7 +1,7 @@
 'use strict';
 
 const AWS = require('aws-sdk');
-const { filter, isNil, pipe, head, sortBy } = require('ramda');
+const { filter, isNil, contains, pipe, head, reduce, sortBy, concat, not, isEmpty, findIndex } = require('ramda');
 
 function stageType(stage) {
   if (/^\/.*\/(i|g|m|s|u|y)*$/.test(stage)) {
@@ -60,6 +60,23 @@ class DeploymentManagerPlugin {
     const deploymentDefinition = pipe(
       filter(({ stage }) => testStage(processedInput.options.stage, stage)),
       sortBy(({ stage }) => stageType(stage)),
+      reduce((acc, item) => {
+        const accountIds = item.accountIds || [];
+        const regions = item.regions || [];
+        const currentItem = {
+          stage: item.stage,
+          accountIds: not(isNil(item.accountId)) ? [item.accountId] : accountIds,
+          regions: not(isNil(item.region)) ? [item.region] : regions,
+        };
+        const existingItemIndex = findIndex(({ stage }) => currentItem.stage === stage, acc);
+        if (existingItemIndex > -1) {
+          acc[existingItemIndex].accountIds = concat(acc[existingItemIndex].accountIds, currentItem.accountIds);
+          acc[existingItemIndex].regions = concat(acc[existingItemIndex].regions, currentItem.regions);
+        } else {
+          acc = concat(acc, [currentItem]);
+        }
+        return acc;
+      }, []),
       head
     )(service.custom.deployment);
 
@@ -67,12 +84,20 @@ class DeploymentManagerPlugin {
       throw new Error(`[serverless-deployment-guard] stage '${processedInput.options.stage}' cannot be deployed`);
     }
 
-    if (!isNil(deploymentDefinition.accountId)) {
+    if (not(isEmpty(deploymentDefinition.accountIds))) {
       const sts = new AWS.STS({ region: processedInput.options.region });
       const { Account } = await sts.getCallerIdentity().promise();
-      if (deploymentDefinition.accountId !== Account) {
+      if (not(contains(Account, deploymentDefinition.accountIds))) {
         throw new Error(
           `[serverless-deployment-guard] stage '${processedInput.options.stage}' cannot be deployed to account '${Account}'`
+        );
+      }
+    }
+
+    if (not(isEmpty(deploymentDefinition.regions))) {
+      if (not(contains(processedInput.options.region, deploymentDefinition.regions))) {
+        throw new Error(
+          `[serverless-deployment-guard] stage '${processedInput.options.stage}' cannot be deployed to region '${processedInput.options.region}'`
         );
       }
     }

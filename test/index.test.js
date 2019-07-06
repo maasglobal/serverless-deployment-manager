@@ -36,10 +36,10 @@ afterAll(() => {
 describe('#authorizer handler', () => {
   it('should pass if stage and account is correct', async () => {
     const deploymentManager = new DeploymentGuardPlugin({
-      processedInput: { options: { stage: 'dev' } },
+      processedInput: { options: { stage: 'dev', region: 'eu-north-1' } },
       service: {
         custom: {
-          deployment: [{ stage: 'dev', accountId: '0123456789' }],
+          deployment: [{ stage: 'dev', accountId: '0123456789', region: 'eu-north-1' }],
         },
       },
     });
@@ -73,6 +73,34 @@ describe('#authorizer handler', () => {
     await expect(deploymentManager.validateStageAndAccount()).resolves.toBeUndefined();
   });
 
+  it('should pass if region is correct', async () => {
+    const deploymentManager = new DeploymentGuardPlugin({
+      processedInput: { options: { stage: 'dev', region: 'eu-north-1' } },
+      service: {
+        custom: {
+          deployment: [{ region: 'eu-north-1' }],
+        },
+      },
+    });
+
+    await expect(deploymentManager.validateStageAndAccount()).resolves.toBeUndefined();
+  });
+
+  it('should fail if region is incorrect', async () => {
+    const deploymentManager = new DeploymentGuardPlugin({
+      processedInput: { options: { stage: 'dev', region: 'us-east-1' } },
+      service: {
+        custom: {
+          deployment: [{ region: 'eu-north-1' }],
+        },
+      },
+    });
+
+    await expect(deploymentManager.validateStageAndAccount()).rejects.toThrow({
+      message: "[serverless-deployment-guard] stage 'dev' cannot be deployed to region 'us-east-1'",
+    });
+  });
+
   it('should pass if regexp stage with flags and account is correct', async () => {
     const deploymentManager = new DeploymentGuardPlugin({
       processedInput: { options: { stage: 'SANDBOX' } },
@@ -86,19 +114,31 @@ describe('#authorizer handler', () => {
     await expect(deploymentManager.validateStageAndAccount()).resolves.toBeUndefined();
   });
 
-  // TODO: later
-  // it('should pass if stage and account is correct in one of the definitions', async () => {
-  //   const deploymentManager = new DeploymentGuardPlugin({
-  //     processedInput: { options: { stage: 'dev' } },
-  //     service: {
-  //       custom: {
-  //         deployment: [{ stage: 'dev', accountId: '1234567890' }, { stage: 'dev', accountId: '0123456789' }],
-  //       },
-  //     },
-  //   });
+  it('should pass if stage and account is correct in one of the definitions', async () => {
+    const deploymentManager = new DeploymentGuardPlugin({
+      processedInput: { options: { stage: 'dev' } },
+      service: {
+        custom: {
+          deployment: [{ stage: 'dev', accountId: '1234567890' }, { stage: 'dev', accountId: '0123456789' }],
+        },
+      },
+    });
 
-  //   await expect(deploymentManager.validateStageAndAccount()).resolves.toBeUndefined();
-  // });
+    await expect(deploymentManager.validateStageAndAccount()).resolves.toBeUndefined();
+  });
+
+  it('should pass if stage and account is correct in account ids array', async () => {
+    const deploymentManager = new DeploymentGuardPlugin({
+      processedInput: { options: { stage: 'dev' } },
+      service: {
+        custom: {
+          deployment: [{ stage: 'dev', accountIds: ['1234567890', '0123456789'] }],
+        },
+      },
+    });
+
+    await expect(deploymentManager.validateStageAndAccount()).resolves.toBeUndefined();
+  });
 
   it('should pass if stage is correct and no account id is defined', async () => {
     const deploymentManager = new DeploymentGuardPlugin({
