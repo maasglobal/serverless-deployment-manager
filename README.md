@@ -119,5 +119,5 @@ In the example, dev and, e.g. sandbox stages are allowed to deploy to account id
 This plugin is triggered before deployment, but if you want manually to test if your current credentials can deploy to a particular stage, you can run the following command.
 
 ```shell
-sls validate --stage dev
+sls validate --stage dev --region eu-west-1
 ```
