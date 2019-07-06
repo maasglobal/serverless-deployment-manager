@@ -1,10 +1,23 @@
 'use strict';
 
 const AWS = require('aws-sdk');
+const { filter, isNil, contains, pipe, head, reduce, sortBy, concat, not, isEmpty, findIndex } = require('ramda');
+
+function stageType(stage) {
+  if (/^\/.*\/(i|g|m|s|u|y)*$/.test(stage)) {
+    return 1;
+  } else if (isNil(stage)) {
+    return 2;
+  }
+  return 0;
+}
 
 function testStage(stage, deploymentDefinitionStage) {
+  if (isNil(deploymentDefinitionStage)) {
+    return true;
+  }
   let regexp;
-  if (/^\/.*\/(i|g|m|s|u|y)*$/.test(deploymentDefinitionStage)) {
+  if (stageType(deploymentDefinitionStage) === 1) {
     const pattern = deploymentDefinitionStage.substr(1, deploymentDefinitionStage.lastIndexOf('/') - 1);
     const flag = deploymentDefinitionStage.substr(deploymentDefinitionStage.lastIndexOf('/') + 1);
     regexp = new RegExp(pattern, flag);
@@ -44,29 +57,47 @@ class DeploymentManagerPlugin {
       throw new Error('[serverless-deployment-guard] service.custom.deployment definition is missing');
     }
 
-    const deploymentDefinitions = service.custom.deployment.filter(({ stage }) =>
-      testStage(processedInput.options.stage, stage)
-    );
+    const deploymentDefinition = pipe(
+      filter(({ stage }) => testStage(processedInput.options.stage, stage)),
+      sortBy(({ stage }) => stageType(stage)),
+      reduce((acc, item) => {
+        const accountIds = item.accountIds || [];
+        const regions = item.regions || [];
+        const currentItem = {
+          stage: item.stage,
+          accountIds: not(isNil(item.accountId)) ? [item.accountId] : accountIds,
+          regions: not(isNil(item.region)) ? [item.region] : regions,
+        };
+        const existingItemIndex = findIndex(({ stage }) => currentItem.stage === stage, acc);
+        if (existingItemIndex > -1) {
+          acc[existingItemIndex].accountIds = concat(acc[existingItemIndex].accountIds, currentItem.accountIds);
+          acc[existingItemIndex].regions = concat(acc[existingItemIndex].regions, currentItem.regions);
+        } else {
+          acc = concat(acc, [currentItem]);
+        }
+        return acc;
+      }, []),
+      head
+    )(service.custom.deployment);
 
-    if (deploymentDefinitions.length === 0) {
+    if (isNil(deploymentDefinition)) {
       throw new Error(`[serverless-deployment-guard] stage '${processedInput.options.stage}' cannot be deployed`);
     }
 
-    if (deploymentDefinitions.every(item => !!item.accountId)) {
+    if (not(isEmpty(deploymentDefinition.accountIds))) {
       const sts = new AWS.STS({ region: processedInput.options.region });
       const { Account } = await sts.getCallerIdentity().promise();
-
-      const exists = !!service.custom.deployment.find(item => {
-        return (
-          item.stage &&
-          item.accountId &&
-          testStage(processedInput.options.stage, item.stage) &&
-          item.accountId.toString() === Account
-        );
-      });
-      if (!exists) {
+      if (not(contains(Account, deploymentDefinition.accountIds))) {
         throw new Error(
           `[serverless-deployment-guard] stage '${processedInput.options.stage}' cannot be deployed to account '${Account}'`
+        );
+      }
+    }
+
+    if (not(isEmpty(deploymentDefinition.regions))) {
+      if (not(contains(processedInput.options.region, deploymentDefinition.regions))) {
+        throw new Error(
+          `[serverless-deployment-guard] stage '${processedInput.options.stage}' cannot be deployed to region '${processedInput.options.region}'`
         );
       }
     }
