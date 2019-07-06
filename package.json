@@ -5,9 +5,9 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "jest",
-    "compile": "npx babel src --out-dir lib",
+    "compile": "babel src --out-dir lib",
     "pre-commit": "npm run compile && npm run lint && npm run prettify",
-    "prepublishOnly": "npm run pre-commit && npm test",
+    "prepublishOnly": "npm run compile",
     "lint": "eslint . --fix --cache",
     "prettify": "prettier --write --ignore-path .gitignore '**/*.{css,html,js,json,md,yaml,yml}'"
   },
@@ -28,8 +28,7 @@
   "devDependencies": {
     "@babel/cli": "^7.5.0",
     "@babel/core": "^7.5.0",
-    "@babel/node": "^7.5.0",
-    "@babel/preset-env": "^7.5.0",
+    "@babel/preset-env": "^7.5.0 ",
     "babel-jest": "^24.8.0",
     "eslint": "^6.0.1",
     "eslint-config-maasglobal": "^2.1.0",
