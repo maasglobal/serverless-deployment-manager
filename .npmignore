@@ -16,3 +16,6 @@ babel.config.js
 test
 
 src
+
+scripts
+.travis.yml
