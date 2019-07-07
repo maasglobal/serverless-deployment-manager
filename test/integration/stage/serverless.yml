@@ -1,0 +1,15 @@
+service: integration-test
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+
+custom:
+  deployment:
+    - stage: dev
+    - stage: test
+
+plugins:
+  localPath: '../../../lib'
+  modules:
+    - index

@@ -1,0 +1,25 @@
+service: deployment-manager-integration
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+
+functions:
+  hello:
+    handler: handler.hello
+
+custom:
+  deployment:
+    - stage: dev
+      region: eu-north-1
+      accountId: ${env:ACCOUNT_ID}
+    - stage: test
+      region: eu-west-1
+      accountId: ${env:ACCOUNT_ID}
+    - stage: prod
+      region: eu-north-1
+      accountId: '1234567890'
+plugins:
+  localPath: '../../../lib'
+  modules:
+    - index

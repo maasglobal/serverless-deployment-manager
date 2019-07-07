@@ -1,0 +1,20 @@
+service: integration-test
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+
+custom:
+  deployment:
+    - stage: dev
+      accountId: ${env:ACCOUNT_ID}
+    - stage: test
+      accountIds:
+        - ${env:ACCOUNT_ID}
+        - '1234567890'
+    - stage: prod
+      accountId: '1234567890'
+plugins:
+  localPath: '../../../lib'
+  modules:
+    - index
