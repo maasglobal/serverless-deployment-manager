@@ -17,7 +17,7 @@ stages:
 jobs:
   include:
     - stage: test
-      script: npm run compile && npm run lint && npm test
+      script: npm run compile && npm run lint && npm test -- unit
     - stage: deploy
       deploy:
         skip_cleanup: true

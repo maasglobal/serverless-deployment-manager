@@ -7,12 +7,12 @@ beforeAll(() => {
 });
 
 describe('validate', () => {
-  it('should output validate command 1', async () => {
+  it('should validate with correct stage', async () => {
     const result = await sls(['validate', '--stage', 'dev']);
     expect(result).toBe('');
   });
 
-  it('should output validate command 2', async () => {
+  it('should fail with incorrect stage', async () => {
     await expect(sls(['validate', '--stage', 'prod'])).rejects.toContain(
       "[serverless-deployment-manager] stage 'prod' cannot be deployed"
     );
