@@ -8,6 +8,7 @@ cache:
 
 install:
   - npm install --no-optionals
+  - npm run compile
 
 stages:
   - name: test
@@ -17,7 +18,7 @@ stages:
 jobs:
   include:
     - stage: test
-      script: npm run compile && npm run lint && npm test -- unit
+      script: npm run lint && npm test -- unit
     - stage: deploy
       deploy:
         skip_cleanup: true
