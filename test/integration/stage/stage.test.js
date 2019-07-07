@@ -3,7 +3,7 @@
 const sls = require('../sls');
 
 beforeAll(() => {
-  process.chdir('test/integration-test/stage');
+  process.chdir(__dirname);
 });
 
 describe('validate', () => {

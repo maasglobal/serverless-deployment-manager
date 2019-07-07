@@ -1,6 +1,6 @@
 'use strict';
 
-const DeploymentGuardPlugin = require('../src');
+const DeploymentGuardPlugin = require('../../src');
 const AWS = require('aws-sdk');
 const { forEach, keys } = require('ramda');
 
