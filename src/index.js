@@ -33,7 +33,7 @@ class DeploymentManagerPlugin {
     this.options = options;
     this.commands = {
       validate: {
-        usage: 'Checks that stage matched current AWS account id defined in serverless.yml',
+        usage: 'Validates current AWS account agains deployment configuration',
         lifecycleEvents: ['validate'],
         options: {
           stage: {
@@ -53,8 +53,8 @@ class DeploymentManagerPlugin {
 
   async validateStageAndAccount() {
     const { processedInput, service } = this.serverless;
-    if (!service.custom.deployment) {
-      throw new Error('[serverless-deployment-guard] service.custom.deployment definition is missing');
+    if (isNil(service.custom) || isNil(service.custom.deployment)) {
+      throw new Error('[serverless-deployment-manager] service.custom.deployment definition is missing');
     }
 
     const deploymentDefinition = pipe(
@@ -81,7 +81,7 @@ class DeploymentManagerPlugin {
     )(service.custom.deployment);
 
     if (isNil(deploymentDefinition)) {
-      throw new Error(`[serverless-deployment-guard] stage '${processedInput.options.stage}' cannot be deployed`);
+      throw new Error(`[serverless-deployment-manager] stage '${processedInput.options.stage}' cannot be deployed`);
     }
 
     if (not(isEmpty(deploymentDefinition.accountIds))) {
@@ -89,7 +89,7 @@ class DeploymentManagerPlugin {
       const { Account } = await sts.getCallerIdentity().promise();
       if (not(contains(Account, deploymentDefinition.accountIds))) {
         throw new Error(
-          `[serverless-deployment-guard] stage '${processedInput.options.stage}' cannot be deployed to account '${Account}'`
+          `[serverless-deployment-manager] stage '${processedInput.options.stage}' cannot be deployed to account '${Account}'`
         );
       }
     }
@@ -97,7 +97,7 @@ class DeploymentManagerPlugin {
     if (not(isEmpty(deploymentDefinition.regions))) {
       if (not(contains(processedInput.options.region, deploymentDefinition.regions))) {
         throw new Error(
-          `[serverless-deployment-guard] stage '${processedInput.options.stage}' cannot be deployed to region '${processedInput.options.region}'`
+          `[serverless-deployment-manager] stage '${processedInput.options.stage}' cannot be deployed to region '${processedInput.options.region}'`
         );
       }
     }

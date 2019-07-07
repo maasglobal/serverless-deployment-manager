@@ -1,0 +1,21 @@
+service: integration-test
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+
+functions:
+  hello:
+    handler: handler.hello
+
+custom:
+  deployment:
+    - region: eu-north-1
+    - regions:
+        - eu-west-2
+        - eu-central-1
+
+plugins:
+  localPath: '../../../lib'
+  modules:
+    - index

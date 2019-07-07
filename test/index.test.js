@@ -97,7 +97,7 @@ describe('#authorizer handler', () => {
     });
 
     await expect(deploymentManager.validateStageAndAccount()).rejects.toThrow({
-      message: "[serverless-deployment-guard] stage 'dev' cannot be deployed to region 'us-east-1'",
+      message: "[serverless-deployment-manager] stage 'dev' cannot be deployed to region 'us-east-1'",
     });
   });
 
@@ -163,7 +163,7 @@ describe('#authorizer handler', () => {
       },
     });
     await expect(deploymentManager.validateStageAndAccount()).rejects.toThrow({
-      message: "[serverless-deployment-guard] stage 'dev' cannot be deployed to account '0123456789'",
+      message: "[serverless-deployment-manager] stage 'dev' cannot be deployed to account '0123456789'",
     });
   });
 
@@ -181,7 +181,7 @@ describe('#authorizer handler', () => {
       },
     });
     await expect(deploymentManager.validateStageAndAccount()).rejects.toThrow({
-      message: "[serverless-deployment-guard] stage 'dev' cannot be deployed to account '0123456789'",
+      message: "[serverless-deployment-manager] stage 'dev' cannot be deployed to account '0123456789'",
     });
   });
 
@@ -195,7 +195,7 @@ describe('#authorizer handler', () => {
       },
     });
     await expect(deploymentManager.validateStageAndAccount()).rejects.toThrow({
-      message: "[serverless-deployment-guard] stage 'dev' cannot be deployed",
+      message: "[serverless-deployment-manager] stage 'dev' cannot be deployed",
     });
   });
 
@@ -207,7 +207,7 @@ describe('#authorizer handler', () => {
       },
     });
     await expect(deploymentManager.validateStageAndAccount()).rejects.toThrow({
-      message: '[serverless-deployment-guard] service.custom.deployment definition is missing',
+      message: '[serverless-deployment-manager] service.custom.deployment definition is missing',
     });
   });
 });
