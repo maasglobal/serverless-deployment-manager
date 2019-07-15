@@ -46,7 +46,7 @@ class DeploymentManagerPlugin {
     };
     this.hooks = {
       'validate:validate': this.validateStageAndAccount.bind(this),
-      'before:package:initialize': this.validateStageAndAccount.bind(this),
+      'before:deploy:deploy': this.validateStageAndAccount.bind(this),
       'before:deploy:function:initialize': this.validateStageAndAccount.bind(this),
     };
   }
