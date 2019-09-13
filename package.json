@@ -26,21 +26,21 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "aws-sdk": "^2.493.0",
+    "aws-sdk": "^2.528.0",
     "ramda": "^0.26.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.5.0",
-    "@babel/core": "^7.5.4",
-    "@babel/preset-env": "^7.5.4",
-    "babel-jest": "^24.8.0",
-    "eslint": "^6.0.1",
+    "@babel/cli": "^7.6.0",
+    "@babel/core": "^7.6.0",
+    "@babel/preset-env": "^7.6.0",
+    "babel-jest": "^24.9.0",
+    "eslint": "^6.3.0",
     "eslint-config-maasglobal": "^2.1.0",
-    "eslint-plugin-import": "^2.18.0",
+    "eslint-plugin-import": "^2.18.2",
     "husky": "^2.7.0",
-    "jest": "^24.8.0",
+    "jest": "^24.9.0",
     "prettier": "^1.18.2",
-    "regenerator-runtime": "^0.13.2",
+    "regenerator-runtime": "^0.13.3",
     "serverless": "latest"
   },
   "repository": {
