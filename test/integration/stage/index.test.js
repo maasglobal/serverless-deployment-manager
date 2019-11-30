@@ -1,9 +1,10 @@
 'use strict';
 
-const sls = require('../sls');
+const { copyPlugin, sls } = require('../lib');
 
 beforeAll(() => {
   process.chdir(__dirname);
+  copyPlugin();
 });
 
 describe('validate', () => {

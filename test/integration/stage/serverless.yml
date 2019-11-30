@@ -10,6 +10,4 @@ custom:
     - stage: test
 
 plugins:
-  localPath: '../../../lib'
-  modules:
-    - index
+  - serverless-deployment-manager

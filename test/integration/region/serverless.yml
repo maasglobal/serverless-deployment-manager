@@ -12,6 +12,4 @@ custom:
         - eu-central-1
 
 plugins:
-  localPath: '../../../lib'
-  modules:
-    - index
+  - serverless-deployment-manager

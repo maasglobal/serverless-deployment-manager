@@ -20,6 +20,4 @@ custom:
       region: eu-north-1
       accountId: '1234567890'
 plugins:
-  localPath: '../../../lib'
-  modules:
-    - index
+  - serverless-deployment-manager

@@ -1,7 +1,10 @@
 'use strict';
 
-const { spawn } = require('child_process');
+const { spawn, execSync } = require('child_process');
 const { concat, filter, isEmpty, not } = require('ramda');
+const { resolve, join } = require('path');
+
+const { copyFileSync } = require('fs');
 
 async function sls(parameters) {
   return new Promise((resolve, reject) => {
@@ -25,4 +28,12 @@ async function sls(parameters) {
   });
 }
 
-module.exports = sls;
+function copyPlugin() {
+  execSync(`mkdir -p ${join(process.cwd(), '.serverless_plugins', 'serverless-deployment-manager')}`);
+  copyFileSync(
+    resolve('../../../src/index.js'),
+    join(process.cwd(), '.serverless_plugins', 'serverless-deployment-manager', 'index.js')
+  );
+}
+
+module.exports = { sls, copyPlugin };
