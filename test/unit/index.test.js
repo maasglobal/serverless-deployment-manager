@@ -119,7 +119,10 @@ describe('#authorizer handler', () => {
       processedInput: { options: { stage: 'dev' } },
       service: {
         custom: {
-          deployment: [{ stage: 'dev', accountId: '1234567890' }, { stage: 'dev', accountId: '0123456789' }],
+          deployment: [
+            { stage: 'dev', accountId: '1234567890' },
+            { stage: 'dev', accountId: '0123456789' },
+          ],
         },
       },
     });

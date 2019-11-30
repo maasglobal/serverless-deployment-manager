@@ -8,6 +8,4 @@ custom:
   something: else
 
 plugins:
-  localPath: '../../../lib'
-  modules:
-    - index
+  - serverless-deployment-manager

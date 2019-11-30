@@ -1,13 +1,14 @@
 'use strict';
 
 const { isNil } = require('ramda');
-const sls = require('../sls');
+const { copyPlugin, sls } = require('../lib');
 
 beforeAll(() => {
   if (isNil(process.env.ACCOUNT_ID)) {
     throw new Error('ACCOUNT_ID is undefined');
   }
   process.chdir(__dirname);
+  copyPlugin();
   jest.setTimeout(120000);
 });
 

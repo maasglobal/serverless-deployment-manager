@@ -1,7 +1,7 @@
 'use strict';
 
 const { isNil } = require('ramda');
-const sls = require('../sls');
+const { copyPlugin, sls } = require('../lib');
 
 beforeAll(() => {
   if (isNil(process.env.ACCOUNT_ID)) {
@@ -9,6 +9,7 @@ beforeAll(() => {
   }
   jest.setTimeout(10000);
   process.chdir(__dirname);
+  copyPlugin();
 });
 
 describe('validate', () => {
