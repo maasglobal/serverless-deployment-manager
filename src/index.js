@@ -1,6 +1,5 @@
 'use strict';
 
-const AWS = require('aws-sdk');
 const { filter, isNil, contains, pipe, head, reduce, sortBy, concat, not, isEmpty, findIndex } = require('ramda');
 
 function stageType(stage) {
@@ -85,8 +84,7 @@ class DeploymentManagerPlugin {
     }
 
     if (not(isEmpty(deploymentDefinition.accountIds))) {
-      const sts = new AWS.STS({ region: processedInput.options.region });
-      const { Account } = await sts.getCallerIdentity().promise();
+      const Account = await this.serverless.providers.aws.getAccountId();
       if (not(contains(Account, deploymentDefinition.accountIds))) {
         throw new Error(
           `[serverless-deployment-manager] stage '${processedInput.options.stage}' cannot be deployed to account '${Account}'`
