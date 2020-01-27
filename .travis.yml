@@ -21,7 +21,7 @@ jobs:
       script: npm run lint && npm test -- unit
     - stage: deploy
       deploy:
-        skip_cleanup: true
+        cleanup: false
         provider: npm
         email: tech@maas.global
         api_key: $NPM_TOKEN
