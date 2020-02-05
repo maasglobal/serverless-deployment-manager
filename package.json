@@ -1,6 +1,6 @@
 {
   "name": "serverless-deployment-manager",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Serverless Framework Plugin for managing deployment to predefined AWS accounts",
   "main": "lib/index.js",
   "scripts": {
@@ -26,20 +26,20 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "aws-sdk": "^2.528.0",
-    "ramda": "^0.26.1"
+    "aws-sdk": "^2.611.0",
+    "ramda": "^0.27.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.6.0",
-    "@babel/core": "^7.6.0",
-    "@babel/preset-env": "^7.6.0",
-    "babel-jest": "^24.9.0",
-    "eslint": "^6.3.0",
-    "eslint-config-maasglobal": "^2.1.0",
-    "eslint-plugin-import": "^2.18.2",
-    "husky": "^2.7.0",
-    "jest": "^24.9.0",
-    "prettier": "^1.18.2",
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.8.4",
+    "@babel/preset-env": "^7.8.4",
+    "babel-jest": "^25.1.0",
+    "eslint": "^6.8.0",
+    "eslint-config-maasglobal": "^3.0.1",
+    "eslint-plugin-import": "^2.20.1",
+    "husky": "^4.2.1",
+    "jest": "^25.1.0",
+    "prettier": "^1.19.1",
     "regenerator-runtime": "^0.13.3",
     "serverless": "latest"
   },
