@@ -22,6 +22,7 @@ jobs:
     - stage: deploy
       deploy:
         cleanup: false
+        skip_cleanup: true
         provider: npm
         email: tech@maas.global
         api_key: $NPM_TOKEN
