@@ -2,6 +2,12 @@
 
 const { filter, isNil, contains, pipe, head, reduce, sortBy, concat, not, isEmpty, findIndex } = require('ramda');
 
+/**
+ * Checks stage type
+ *
+ * @param stage
+ * @returns {number} - stage type
+ */
 function stageType(stage) {
   if (/^\/.*\/(i|g|m|s|u|y)*$/.test(stage)) {
     return 1;
@@ -11,6 +17,13 @@ function stageType(stage) {
   return 0;
 }
 
+/**
+ * Checks the stage
+ *
+ * @param stage
+ * @param deploymentDefinitionStage
+ * @returns {boolean} - is test stage
+ */
 function testStage(stage, deploymentDefinitionStage) {
   if (isNil(deploymentDefinitionStage)) {
     return true;

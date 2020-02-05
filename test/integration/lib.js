@@ -6,6 +6,12 @@ const { resolve, join } = require('path');
 
 const { copyFileSync } = require('fs');
 
+/**
+ * Runs serverless
+ *
+ * @param parameters
+ * @returns {Promise->string} - std out and std error
+ */
 async function sls(parameters) {
   return new Promise((resolve, reject) => {
     const run = filter(parameter => not(isEmpty(parameter)), concat(['sls', '--no-color'], parameters));
@@ -28,6 +34,9 @@ async function sls(parameters) {
   });
 }
 
+/**
+ * Copies the plugin to test env
+ */
 function copyPlugin() {
   execSync(`mkdir -p ${join(process.cwd(), '.serverless_plugins', 'serverless-deployment-manager')}`);
   copyFileSync(
