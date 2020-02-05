@@ -9,7 +9,7 @@
     "pre-commit": "npm run compile && npm run lint && npm run prettify",
     "prepublishOnly": "npm run compile",
     "lint": "eslint . --fix --cache",
-    "prettify": "prettier --write --ignore-path .gitignore '**/*.{css,html,js,json,md,yaml,yml}'"
+    "prettify": "prettier --write --ignore-path .gitignore \"**/*.{css,html,js,json,md,yaml,yml}\""
   },
   "author": "laardee",
   "jest": {
