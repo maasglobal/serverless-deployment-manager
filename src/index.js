@@ -52,6 +52,7 @@ class DeploymentManagerPlugin {
             usage: ' "--stage dev" or "-s dev"',
             required: true,
             shortcut: 's',
+            type: 'string',
           },
         },
       },
