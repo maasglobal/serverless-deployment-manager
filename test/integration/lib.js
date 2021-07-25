@@ -14,7 +14,7 @@ const { copyFileSync } = require('fs');
  */
 async function sls(parameters) {
   return new Promise((resolve, reject) => {
-    const run = filter(parameter => not(isEmpty(parameter)), concat(['sls', '--no-color'], parameters));
+    const run = filter(parameter => not(isEmpty(parameter)), concat(['sls'], parameters));
     const serverless = spawn('npx', run);
     let output = '';
     serverless.stdout.on('data', data => {
