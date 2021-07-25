@@ -9,7 +9,7 @@ beforeAll(() => {
 
 describe('command', () => {
   it('should output validate command', async () => {
-    const result = await sls(['']);
+    const result = await sls(['help']);
     expect(result).toContain('Validates current AWS account agains deployment configuration');
   });
 
